@@ -165,9 +165,9 @@ def draw_input(cur_player):
 
 # Draw when end match
 def draw_winner(winners):
-    winner_text = "Winner: "
+    winner_text = "Winner:"
     for winner in winners:
-        winner_text += str(winner.id)
+        winner_text += (" " + str(winner.id))
     winner_text = FONT1_1.render(winner_text, 1, ORANGE)
     WIN.blit(winner_text, (WIDTH //2 - winner_text.get_width() /2, HEIGHT //2 - winner_text.get_height() /2 - 200))
 
@@ -225,8 +225,9 @@ def main():
         if input:
             handle_input(cur_player)
         
+        draw_win(cur_player, players, p)
         if game.end_match():
-    
+
             draw_winner(game.winners)
             draw_ave(game)
             draw_multi_num(players, p)
@@ -239,7 +240,6 @@ def main():
             pygame.time.delay(1000)
             n.send("reset")
 
-        draw_win(cur_player, players, p)
 
         pygame.display.update()
 
