@@ -7,7 +7,7 @@ from player import Player
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-server = "172.104.158.232"
+server = "192.168.0.245"
 port = 5555
 
 try:
@@ -53,15 +53,18 @@ def threaded_client(conn, p, gameId):
 
                     datas = data.split(" ")
                     if data == "reset":
-                        print("Reset game")
                         game.reset()
 
                     if data == "reset match":
                         game.end_match()
                         game.reset_match()
 
+                    if data == "dead":
+                        game.kill_player()
+
                     if datas[0] == "input" and datas[1] != "":
                         text = datas[1]
+                        
                         if text == "back":
                             if len(cur_player.input) > 0:
                                 cur_player.input.pop()
@@ -74,7 +77,6 @@ def threaded_client(conn, p, gameId):
                             
                     reply = game
                     conn.sendall(pickle.dumps(reply))
-
             else:
                 print("No game")
                 break

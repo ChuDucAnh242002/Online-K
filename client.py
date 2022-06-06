@@ -14,7 +14,7 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Card game")
 
 CLOCK = pygame.time.Clock()
-FPS = 10
+FPS = 20
 
 # Font
 FONT1 = pygame.font.SysFont("comicsans", 48)
@@ -38,8 +38,6 @@ GREEN = (0, 255, 0)
 YELLOW = (255, 255, 0)
 ORANGE = (255, 0, 255)
 
-n = Network()
-
 def draw_win(cur_player, players, p):
 
     WIN.fill(WHITE)
@@ -54,8 +52,7 @@ def draw_win(cur_player, players, p):
     draw_input(cur_player)
     draw_point(p, players)
     draw_locked(players, p)
-    
-        
+          
 def draw_player(player_text, num, p):
 
     pos = num - p
@@ -93,7 +90,6 @@ def draw_locked(players, p):
                     WIN.blit(lock_in_text, (POSITION5_WIDTH, POSITION5_HEIGHT + 70))
 
 def handle_input(cur_player):
-    global n
     keys = pygame.key.get_pressed()
     datas = ["input"]
     text = ""
@@ -136,7 +132,7 @@ def handle_input(cur_player):
 
     datas.append(text)
     data = " ".join(datas)
-    n.send(data)
+    return data
         
 def draw_point(p, players):
     for num, player in enumerate(players):
@@ -194,10 +190,10 @@ def draw_multi_num(players, p):
             
 def main():
     run = True
-    input = True
+    n = Network()
 
     p = int(n.getP())
-    print("You are player", p)
+    # print("You are player", p)
 
     while run:
         CLOCK.tick(FPS)
@@ -222,10 +218,13 @@ def main():
             if cur_player.input != []:
                 n.send("locked")
 
-        if input:
-            handle_input(cur_player)
+        if not cur_player.locked:
+            n.send(handle_input(cur_player))
         
         draw_win(cur_player, players, p)
+        if game.check_death():
+            n.send("dead")
+
         if game.end_match():
 
             draw_winner(game.winners)

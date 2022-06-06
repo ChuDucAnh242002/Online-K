@@ -9,48 +9,62 @@ class Game:
     def get_players(self):
         return self.players
 
+    def get_ave(self):
+        return self.ave
+
     def cal_ave(self):
         for player in self.players:
             self.sum += player.get_num()
         self.ave = self.sum * 0.8 / len(self.players)
 
-    def get_ave(self):
-        return self.ave
-
     def end_match(self):
+        # min is for compare with average, player mins to store the smalles player value
         min = 100
         player_min = 100
-        temp_mins = []
+        player_num = []
 
         for player in self.players:
             if player.locked == False:
                 return False
 
         self.cal_ave()
+
         for player in self.players:
             temp_min = player.get_num()
-            temp_mins.append(temp_min)
+            player_num.append(temp_min)
             if min > abs(self.ave - temp_min):
                 min = abs(self.ave - temp_min)
                 player_min = temp_min
 
-        for num, m in enumerate(temp_mins):
+        # New rule when there are 3 player left
+        for player in self.players:
+            if player_num.count(player.get_num()) > 1 and len(self.players) <= 3:
+                cur_player.point -= 1
+                return True
+
+        # temp_list is list of player number, 5 of them
+        # num is index, m is value
+        for num, m in enumerate(player_num):
+            # Go through the list of player nums and find the one who is the closest
+            cur_player = self.players[num]
             if player_min != m :
-                if 0 in temp_mins:
-                    if self.players[num].get_num() == 100:
-                        self.winners.append(self.players[num])
+                if 0 in player_num:
+                    if cur_player.get_num() == 100:
+                        self.winners.append(cur_player)
                     else:
-                        self.players[num].point -= 1
+                        cur_player.point -= 1
                 else:
-                    self.players[num].point -= 1
+                    cur_player.point -= 1
+
+            # Found the one closest
             elif player_min == m:
-                if 100 in temp_mins:
+                if 100 in player_num:
                     if player_min == 0:
-                        self.players[num].point -=1
+                        cur_player.point -=1
                     else:
-                        self.winners.append(self.players[num])
+                        self.winners.append(cur_player)
                 else:
-                    self.winners.append(self.players[num])
+                    self.winners.append(cur_player)
 
         return True
 
@@ -79,7 +93,13 @@ class Game:
             return True
         return False
         
-    def check_death(self):
+    def kill_player(self):
         for player in self.players:
             if player.dead():
                 self.players.remove(player)
+
+    def check_death(self):
+        for player in self.players:
+            if player.dead():
+                return True
+        return False
