@@ -22,6 +22,7 @@ print("Waiting for a connection")
 connections = 0
 idCount = 0
 games = {}
+players_dict = {}
 players = []
 
 def init_players(p):
@@ -33,6 +34,7 @@ def threaded_client(conn, p, gameId):
     global idCount, players
     conn.send(str.encode(str(p)))
 
+    cur_player = players[p]
     reply = ""
     while True:
         try:
@@ -40,7 +42,10 @@ def threaded_client(conn, p, gameId):
 
             if gameId in games:
                 game = games[gameId]
-                cur_player = players[p]
+
+                if len(game.players) != len(players):
+                    print("imposible")
+                
                 if not data:
                     print("No data")
                     break
@@ -83,8 +88,9 @@ def threaded_client(conn, p, gameId):
             print("Closing game", gameId)
     except:
         pass
+
     idCount -= 1
-    players.pop()
+    players.remove(cur_player)
     conn.close()
 
 def main():
@@ -99,7 +105,7 @@ def main():
             p = idCount - 1
             gameId = (idCount -1) // 5
             init_players(p)
-            if idCount == 1:
+            if idCount %5 == 1:
                 games[gameId] = Game(gameId, players)
                 print("Creating a new game...")
             else:
