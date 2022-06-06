@@ -1,7 +1,6 @@
 import socket
 from _thread import *
 import pickle
-import time
 
 from game import Game
 from player import Player
@@ -37,7 +36,7 @@ def threaded_client(conn, p, gameId):
     reply = ""
     while True:
         try:
-            data = conn.recv(4096).decode()
+            data = conn.recv(4096*4).decode()
 
             if gameId in games:
                 game = games[gameId]
@@ -49,6 +48,7 @@ def threaded_client(conn, p, gameId):
 
                     datas = data.split(" ")
                     if data == "reset":
+                        print("Reset game")
                         game.reset()
 
                     if data == "reset match":
@@ -63,7 +63,6 @@ def threaded_client(conn, p, gameId):
                         elif text != "back":
                             if len(cur_player.input) < 3:
                                 cur_player.input.append(text)
-                            # print(len(cur_player.input))
 
                     if data == "locked":
                         cur_player.locked = True
@@ -79,8 +78,9 @@ def threaded_client(conn, p, gameId):
             break
     print("Lost connection")
     try:
-        del games[gameId]
-        print("Closing game", gameId)
+        if p == 0:
+            del games[gameId]
+            print("Closing game", gameId)
     except:
         pass
     idCount -= 1
@@ -103,7 +103,6 @@ def main():
                 games[gameId] = Game(gameId, players)
                 print("Creating a new game...")
             else:
-                # print(gameId)
                 games[gameId].players = players
             
             start_new_thread(threaded_client, (conn, p, gameId))

@@ -1,6 +1,6 @@
 import pygame
 import sys
-import os
+# import os
 
 from button import Button
 from network import Network
@@ -40,7 +40,7 @@ ORANGE = (255, 0, 255)
 
 n = Network()
 
-def draw_win(game, cur_player, players, p):
+def draw_win(cur_player, players, p):
 
     WIN.fill(WHITE)
     for num, player in enumerate(players):
@@ -167,25 +167,31 @@ def draw_input(cur_player):
 def draw_winner(winners):
     winner_text = "Winner: "
     for winner in winners:
-        winner_text += winner.id
+        winner_text += str(winner.id)
     winner_text = FONT1_1.render(winner_text, 1, ORANGE)
-    WIN.blit(winner_text, (WIDTH //2 - winner_text.get_width() /2, HEIGHT //2 - winner_text.get_height() /2 + 200))
-
+    WIN.blit(winner_text, (WIDTH //2 - winner_text.get_width() /2, HEIGHT //2 - winner_text.get_height() /2 - 200))
 
 def draw_ave(game):
-    ave_text = f"Average: {game.get_ave()}"
+    ave_text = f"Average: {game.get_ave():.2f}"
     ave_text = FONT1_1.render(ave_text, 1, YELLOW)
     WIN.blit(ave_text, (WIDTH //2 - ave_text.get_width() /2, HEIGHT //2 - ave_text.get_height() /2 + 50))
     
 def draw_multi_num(players, p):
 
     for num, player in enumerate(players):
-        if num == p: continue
+        pos = num - p
         input_text = str(player.get_num())
-        input_text = FONT2.render(input_text, 1, BLUE)
-        WIN.blit(input_text, (POSITION2_WIDTH, POSITION2_HEIGHT + 35))
-        
-
+        if pos != 0:
+            input_text = FONT2.render(input_text, 1, BLUE)
+            if pos == 1 or pos == -4:
+                WIN.blit(input_text, (POSITION2_WIDTH, POSITION2_HEIGHT  + 35))
+            if pos == 2 or pos == -3:
+                WIN.blit(input_text, (POSITION3_WIDTH, POSITION3_HEIGHT + 35))
+            if pos == 3 or pos == -2:
+                WIN.blit(input_text, (POSITION4_WIDTH, POSITION4_HEIGHT + 35))
+            if pos == 4 or pos == -1:
+                WIN.blit(input_text, (POSITION5_WIDTH, POSITION5_HEIGHT + 35))
+            
 def main():
     run = True
     input = True
@@ -213,26 +219,29 @@ def main():
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
-            n.send("locked")
+            if cur_player.input != []:
+                n.send("locked")
 
         if input:
             handle_input(cur_player)
         
         if game.end_match():
-            
+    
             draw_winner(game.winners)
             draw_ave(game)
             draw_multi_num(players, p)
             pygame.display.update()
             pygame.time.delay(2000)
             
-            
             n.send("reset match")
 
-        draw_win(game, cur_player,players, p)
+        if game.end_game():
+            pygame.time.delay(1000)
+            n.send("reset")
+
+        draw_win(cur_player, players, p)
 
         pygame.display.update()
-
 
 def menu():
     run = True
@@ -256,8 +265,6 @@ def menu():
                 run = False
                 main()
                 break        
-
-        
 
 if __name__ == "__main__":
     while True:
