@@ -30,19 +30,15 @@ class Game:
         for player in self.players:
             temp_min = player.get_num()
             temp_mins.append(temp_min)
-            # print(self.ave)
-            # print(abs(self.ave - temp_min), min)
             if min > abs(self.ave - temp_min):
                 min = abs(self.ave - temp_min)
                 player_min = temp_min
-                # print(player_min)
 
         for num, m in enumerate(temp_mins):
             if player_min != m :
                 if 0 in temp_mins:
                     if self.players[num].get_num() == 100:
                         self.winners.append(self.players[num])
-                        # print(player_min, temp_mins, self.players[num].get_num())
                     else:
                         self.players[num].point -= 1
                 else:
@@ -83,3 +79,7 @@ class Game:
             return True
         return False
         
+    def check_death(self):
+        for player in self.players:
+            if player.dead():
+                self.players.remove(player)

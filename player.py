@@ -16,3 +16,7 @@ class Player:
         self.point = 5
         self.input = []
         self.locked = False
+
+    def dead(self):
+        if self.point == 0:
+            return True

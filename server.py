@@ -90,7 +90,7 @@ def threaded_client(conn, p, gameId):
         pass
 
     idCount -= 1
-    players.remove(cur_player)
+    game.players.remove(cur_player)
     conn.close()
 
 def main():
