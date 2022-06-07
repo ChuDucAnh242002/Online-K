@@ -36,13 +36,20 @@ class Game:
                 min = abs(self.ave - temp_min)
                 player_min = temp_min
 
-        # New rule when there are 3 player left
-        for player in self.players:
-            if player_num.count(player.get_num()) > 1 and len(self.players) <= 3:
-                cur_player.point -= 1
-                return True
+        duplicates = [number for number in player_num if player_num.count(number) > 1]
+        unique_duplicate = list(set(duplicates))
 
-        # temp_list is list of player number, 5 of them
+        # New rule when there are 3 player left
+        if len(self.players) <= 3 and unique_duplicate != []:
+            duplicate = unique_duplicate[0]
+            for player in self.players:
+                if player.get_num() == duplicate:
+                    player.point -= 1
+                else:
+                    self.winners.append(player)
+            return True
+                    
+        # player_num is list of player number, 5 of them
         # num is index, m is value
         for num, m in enumerate(player_num):
             # Go through the list of player nums and find the one who is the closest

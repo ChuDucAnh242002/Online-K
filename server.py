@@ -34,11 +34,14 @@ def threaded_client(conn, p, gameId):
     global idCount, players
     conn.send(str.encode(str(p)))
 
+    # for player in players:
+    #     if player.id == p:
+    #         cur_player = player
     cur_player = players[p]
     reply = ""
     while True:
         try:
-            data = conn.recv(4096*4).decode()
+            data = conn.recv(4096*8).decode()
 
             if gameId in games:
                 game = games[gameId]

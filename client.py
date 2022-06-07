@@ -201,6 +201,9 @@ def main():
         try:
             game = n.send("get")
             players = game.get_players()
+            # for player in players:
+            #     if player.id == p:
+            #         cur_player = player
             cur_player = players[p]
         except:
             run = False
