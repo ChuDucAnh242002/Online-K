@@ -6,11 +6,7 @@
 
     You change the server ip address from network.py and server.py
 
-    Using client.exe or
-
-    ```python
-    python client.py
-    ```
+    Launch client.exe
 
 # Rules
 
@@ -18,11 +14,13 @@
 
     In each turn, each player choose a number from 0 to 100.
 
+    Choose number by typing 3 number (first number can only be 1 or 0)
+
+    press key spacebar to locked the number
+
     The game will calculate the average * 0.8.
 
-    Player who closest to the result will win, other player will 
-    
-    lose point.
+    Player who closest to the result will win, other player will lose point.
 
     If there is a player chooses 0 and a player chooses 100
 
