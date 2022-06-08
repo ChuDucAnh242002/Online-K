@@ -7,7 +7,7 @@ from player import Player
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-server = "172.104.158.232"
+server = ""
 port = 5555
 
 try:
@@ -38,7 +38,7 @@ def threaded_client(conn, p, gameId):
     reply = ""
     while True:
         try:
-            data = conn.recv(4096*16).decode()
+            data = conn.recv(4096*8).decode()
 
             if gameId in games:
                 game = games[gameId]
