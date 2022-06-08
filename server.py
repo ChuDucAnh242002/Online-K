@@ -34,14 +34,11 @@ def threaded_client(conn, p, gameId):
     global idCount, players
     conn.send(str.encode(str(p)))
 
-    # for player in players:
-    #     if player.id == p:
-    #         cur_player = player
     cur_player = players[p]
     reply = ""
     while True:
         try:
-            data = conn.recv(4096*8).decode()
+            data = conn.recv(4096*16).decode()
 
             if gameId in games:
                 game = games[gameId]
@@ -100,12 +97,11 @@ def threaded_client(conn, p, gameId):
 
 def main():
     global connections, idCount, players
-    if connections < 5:
-        connections += 1
-        while True:
+    while True:
+        if connections < 5:
             conn, addr = s.accept()
             print("Connected to: ", addr)
-
+            connections += 1
             idCount += 1
             p = idCount - 1
             gameId = (idCount -1) // 5
@@ -117,7 +113,6 @@ def main():
                 games[gameId].players = players
             
             start_new_thread(threaded_client, (conn, p, gameId))
-
                 
 if __name__ == "__main__":
     main()

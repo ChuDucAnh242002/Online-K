@@ -1,7 +1,7 @@
 class Player:
     def __init__(self, id):
         self.id = id
-        self.point = 5
+        self.point = 10
         self.input = []
         self.locked = False
     
@@ -13,7 +13,7 @@ class Player:
         return self.point
 
     def reset(self):
-        self.point = 5
+        self.point = 10
         self.input = []
         self.locked = False
 

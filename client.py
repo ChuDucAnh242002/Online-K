@@ -169,7 +169,7 @@ def draw_winner(winners):
 
 def draw_ave(game):
     ave_text = f"Average: {game.get_ave():.2f}"
-    ave_text = FONT1_1.render(ave_text, 1, YELLOW)
+    ave_text = FONT1_1.render(ave_text, 1, ORANGE)
     WIN.blit(ave_text, (WIDTH //2 - ave_text.get_width() /2, HEIGHT //2 - ave_text.get_height() /2 + 50))
     
 def draw_multi_num(players, p):
@@ -188,12 +188,16 @@ def draw_multi_num(players, p):
             if pos == 4 or pos == -1:
                 WIN.blit(input_text, (POSITION5_WIDTH, POSITION5_HEIGHT + 35))
             
+def draw_survivor(survivor):
+    survivor_text = "Survivor: " + str(survivor.id)
+    survivor_text = FONT1_1.render(survivor_text, 1, ORANGE)
+    WIN.blit(survivor_text, (WIDTH //2 - survivor_text.get_width() /2, HEIGHT //2 - survivor_text.get_height() /2 - 200))
+
 def main():
     run = True
     n = Network()
 
     p = int(n.getP())
-    # print("You are player", p)
 
     while run:
         CLOCK.tick(FPS)
@@ -201,9 +205,6 @@ def main():
         try:
             game = n.send("get")
             players = game.get_players()
-            # for player in players:
-            #     if player.id == p:
-            #         cur_player = player
             cur_player = players[p]
         except:
             run = False
@@ -234,12 +235,14 @@ def main():
             draw_ave(game)
             draw_multi_num(players, p)
             pygame.display.update()
-            pygame.time.delay(2000)
-            
+            pygame.time.delay(4000)
             n.send("reset match")
 
         if game.end_game():
-            pygame.time.delay(1000)
+            draw_win(cur_player, players, p)
+            draw_survivor(game.get_survivor())
+            pygame.display.update()
+            pygame.time.delay(4000)
             n.send("reset")
 
 

@@ -5,6 +5,10 @@ class Game:
         self.sum = 0
         self.ave = 0
         self.winners = []
+        self.survivor = None
+
+    def get_survivor(self):
+        return self.survivor
 
     def get_players(self):
         return self.players
@@ -96,6 +100,8 @@ class Game:
         for player in self.players:
             if player.get_point() == 0:
                 count_0 += 1
+            elif self.winners != []: 
+                self.survivor = self.winners[0]
         if count_0 == len(self.players) - 1 and len(self.players) > 1:
             return True
         return False
